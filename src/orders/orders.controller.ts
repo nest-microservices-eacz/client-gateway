@@ -7,12 +7,14 @@ import {
   Inject,
   ParseUUIDPipe,
   Query,
+  Patch,
 } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { ORDER_SERVICE } from 'src/config';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { catchError } from 'rxjs';
 import { OrderPaginationDto } from './dto/order-pagination.dto';
+import { StatusDto } from './dto/status.dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -45,5 +47,19 @@ export class OrdersController {
         throw new RpcException(err);
       }),
     );
+  }
+
+  @Patch(':id')
+  changeOrderStatus(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() statusDto: StatusDto,
+  ) {
+    return this.ordersClient
+      .send('changeOrderStatus', { id, ...statusDto })
+      .pipe(
+        catchError((err) => {
+          throw new RpcException(err);
+        }),
+      );
   }
 }
