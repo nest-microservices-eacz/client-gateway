@@ -20,6 +20,9 @@ async function bootstrap() {
   app.useGlobalFilters(new RpcCustomExceptionFilter())
 
   await app.listen(envs.port);
+
+  console.log('hello world submodule test');
+  
   logger.log(`Client Gateway running on port ${envs.port}`);
 }
 bootstrap();
